@@ -61,7 +61,7 @@ public class MovieDetailActivityFragment extends Fragment {
         txtTitle.setText(title);
         txtReleaseDate.setText(releaseDate);
         txtSynopsis.setText(synopsis);
-        txtVote.setText(vote);
+        txtVote.setText(vote+"/10");
 
         Picasso.with(getActivity()).load(poster).into(imagePoster);
 
