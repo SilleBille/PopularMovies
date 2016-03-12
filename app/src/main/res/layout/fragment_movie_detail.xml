@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/detail_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/content_title_text_size"/>
+
+            <ImageView
+                android:id="@+id/poster_detail_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/layout_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/release_date_label"
+                style="@style/movieLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_release_date" />
+
+            <TextView
+                android:id="@+id/release_date_text"
+                style="@style/movieText" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/layout_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/release_vote_label"
+                style="@style/movieLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_vote" />
+
+            <TextView
+                android:id="@+id/release_vote_text"
+                style="@style/movieText" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/layout_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/release_synopsis_label"
+                style="@style/movieLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_synopsis" />
+
+            <TextView
+                android:id="@+id/release_synopsis_text"
+                style="@style/movieText" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>
