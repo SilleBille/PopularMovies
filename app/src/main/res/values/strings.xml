@@ -1,4 +1,5 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+
     <string name="app_name">Popular Movies</string>
     <string name="action_settings">Settings</string>
 
@@ -12,5 +13,17 @@
     <string name="pref_sort_order_title">Sorting Order</string>
     <string name="pref_sort_order_dialog_title">Sort By</string>
     <string name="title_activity_movie_detail">Movie Details</string>
+    <string name="format_votes"><xliff:g id="vote">%1$s</xliff:g>/10</string>
+    <string name="empty_detail_message">Please select a Movie for more details</string>
+    <string name="label_reviews">Reviews : </string>
+    <string name="label_videos">Trailers : </string>
+    <string name="share">Share</string>
 
+    <string name="share_content">Check this movie: <xliff:g id="movie_title">%1$s</xliff:g>\nTrailer: <xliff:g id="movie_title">%2$s</xliff:g></string>
+    <string name="not_online_not_favorite">Device offline! Please change sort order to Favorites to view offline data</string>
+
+    <string name="comment_author">%1$s wrote:</string>
+
+    <string name="reviews_unavailable">Connect internet to view reviews!</string>
+    <string name="no_reviews">No reviews available!</string>
 </resources>
