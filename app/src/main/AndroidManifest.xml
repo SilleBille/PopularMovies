@@ -33,13 +33,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mkd.popular.movies.MainActivity" />
         </activity>
-
-
-        <provider
-            android:name=".data.MovieProvider"
-            android:authorities="com.mkd.popular.movies"
-            android:enabled="true"
-            android:exported="true"/>
     </application>
 
 </manifest>
