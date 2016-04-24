@@ -121,6 +121,11 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
+            <TextView
+                style="@style/movieText"
+                android:id="@+id/trailersEmptyPlaceHolder"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <LinearLayout
