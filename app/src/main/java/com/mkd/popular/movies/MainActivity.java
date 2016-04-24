@@ -29,6 +29,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        MainActivityFragment mainActivityFragment = null;
+        if (savedInstanceState == null) {
+            mainActivityFragment = new MainActivityFragment();
+        } else {
+            mainActivityFragment = (MainActivityFragment)getSupportFragmentManager().findFragmentByTag(MAIN_FRAGMENT_TAG);
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_movie_list,
+                mainActivityFragment, MAIN_FRAGMENT_TAG).commit();
 
         if(findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
@@ -44,14 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
         }
-        MainActivityFragment mainActivityFragment = null;
-        if (savedInstanceState == null) {
-            mainActivityFragment = new MainActivityFragment();
-        } else {
-            mainActivityFragment = (MainActivityFragment)getSupportFragmentManager().findFragmentByTag(MAIN_FRAGMENT_TAG);
-        }
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_movie_list,
-                mainActivityFragment, MAIN_FRAGMENT_TAG).commit();
+
 
 
     }

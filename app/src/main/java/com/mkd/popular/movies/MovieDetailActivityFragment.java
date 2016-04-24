@@ -1,5 +1,6 @@
 package com.mkd.popular.movies;
 
+import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -69,7 +70,8 @@ public class MovieDetailActivityFragment extends Fragment {
     long movieId;
     Uri mUri;
     Movies movie;
-    TextView txtTitle, txtVote, txtSynopsis, txtReleaseDate, txtEmptyView, mTxtReviewsEmptyPlaceHolder;
+    TextView txtTitle, txtVote, txtSynopsis, txtReleaseDate, txtEmptyView, mTxtReviewsEmptyPlaceHolder,
+    mTxtVideosEmptyPlaceHolder;
     ImageView imagePoster, favoriteMovie;
     ProgressBar mVideosProgressBar, mReviewsProgressBar;
     NonScrollListView reviewsListView, videosListView;
@@ -122,8 +124,15 @@ public class MovieDetailActivityFragment extends Fragment {
         // Get the provider and hold onto it to set/change the share intent.
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
+        if(!Utility.isOnline(getActivity()) && movie != null) {
+            mShareContent = String.format(getResources().getString(R.string.share_content),
+                    movie.getTitle(), (mVideosList.size() != 0)
+                            ? (MovieConstant.TRAILER_BASE_URL + mVideosList.get(0).getKey())
+                            : "<NOT AVAILABLE>");
+            mShareActionProvider.setShareIntent(createActionShare());
+        }
 
-        mShareActionProvider.setShareIntent(createActionShare());
+
     }
 
     @Override
@@ -143,6 +152,7 @@ public class MovieDetailActivityFragment extends Fragment {
             imagePoster = (ImageView) rootView.findViewById(R.id.poster_detail_image);
             favoriteMovie = (ImageView) rootView.findViewById(R.id.favorite_image);
             mTxtReviewsEmptyPlaceHolder = (TextView) rootView.findViewById(R.id.reviewsEmptyPlaceHolder);
+            mTxtVideosEmptyPlaceHolder = (TextView) rootView.findViewById(R.id.trailersEmptyPlaceHolder);
             reviewsListView = (NonScrollListView) rootView.findViewById(R.id.reviews_list_view);
             videosListView = (NonScrollListView) rootView.findViewById(R.id.videos_list_view);
 
@@ -181,7 +191,7 @@ public class MovieDetailActivityFragment extends Fragment {
             videosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    YoutubeLinks trailer = mVideosAdapter.getItem(position);
+                    YoutubeLinks trailer = (YoutubeLinks) parent.getItemAtPosition(position);
                     playYoutubeVideo(trailer.getKey());
                 }
             });
@@ -203,19 +213,23 @@ public class MovieDetailActivityFragment extends Fragment {
                     );
 
                     if (c != null && c.moveToFirst()) {
-                        String tokens[] = c.getString(COL_VIDEO_POS).split("_");
+                        if( c.getString(COL_VIDEO_POS) != null) {
+                            String tokens[] = c.getString(COL_VIDEO_POS).split("_");
 
-                        YoutubeLinks links = new YoutubeLinks();
+                            YoutubeLinks links = new YoutubeLinks();
 
-                        links.setName(tokens[0]);
-                        links.setKey(tokens[1]);
-                        mVideosList.add(links);
+                            links.setName(tokens[0]);
+                            links.setKey(tokens[1]);
+                            mVideosList.add(links);
+                            c.close();
+                        } else {
+                            mTxtVideosEmptyPlaceHolder.setText(getResources().getString(R.string.no_trailers));
+                            mTxtVideosEmptyPlaceHolder.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
                 setDetails(movie);
-                mShareContent = String.format(getResources().getString(R.string.share_content),
-                        movie.getTitle(),
-                        MovieConstant.TRAILER_BASE_URL + mVideosList.get(0).getKey());
+
             }
 
         } else {
@@ -337,7 +351,7 @@ public class MovieDetailActivityFragment extends Fragment {
         if (c != null) c.close();
         return isFavorite;
     }
-
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     void startRetrievingTask(LoadTrailerAndReviewsDetails multiLoad, long movieId) {
         if (multiLoad != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -396,14 +410,16 @@ public class MovieDetailActivityFragment extends Fragment {
                 JSONObject response = new JSONObject(videos);
                 JSONArray videoUrlArray = response.getJSONArray("results");
                 YoutubeLinks links;
-
+                if (videoUrlArray.length() == 0) {
+                    mTxtVideosEmptyPlaceHolder.setText(getResources().getString(R.string.no_trailers));
+                    mTxtVideosEmptyPlaceHolder.setVisibility(View.VISIBLE);
+                }
                 for (int i = 0; i < videoUrlArray.length(); i++) {
                     JSONObject trailerJson = videoUrlArray.getJSONObject(i);
                     links = new YoutubeLinks();
                     links.setKey(trailerJson.getString("key"));
                     links.setName(trailerJson.getString("name"));
-                    //mVideosAdapter.add(links);
-                    mVideosList.add(links);
+                    mVideosAdapter.add(links);
                     if (trailerJson.getString("type").equalsIgnoreCase("Trailer")
                             && (youtubeKey == null || youtubeKey.equalsIgnoreCase("")))
                         youtubeKey = links.getName() + "_" + links.getKey();
@@ -414,6 +430,14 @@ public class MovieDetailActivityFragment extends Fragment {
                     getActivity().getContentResolver().update(MovieDbContract.MoviesEntry.CONTENT_URI,
                             value, MOVIE_ID_WHERE, new String[]{String.valueOf(movieId)});
                 }
+
+                mShareContent = String.format(getResources().getString(R.string.share_content),
+                        movie.getTitle(),
+                        (mVideosList.size() != 0)
+                                ? MovieConstant.TRAILER_BASE_URL + mVideosAdapter.getItem(0).getKey()
+                                : "<NOT AVAILABLE>" );
+                if(mShareActionProvider != null)
+                    mShareActionProvider.setShareIntent(createActionShare());
             } catch (JSONException e) {
                 Log.e(LOG_TAG, e.getLocalizedMessage());
             }
