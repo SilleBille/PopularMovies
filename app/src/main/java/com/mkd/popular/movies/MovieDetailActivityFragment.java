@@ -397,12 +397,14 @@ public class MovieDetailActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            mReviewsProgressBar.setVisibility(View.GONE);
-            mVideosProgressBar.setVisibility(View.GONE);
-            if (videosJSON != null)
-                parseVideosJson(videosJSON);
-            if (reviewJSON != null)
-                parseReviewsJson(reviewJSON);
+            if(isAdded()) {
+                mReviewsProgressBar.setVisibility(View.GONE);
+                mVideosProgressBar.setVisibility(View.GONE);
+                if (videosJSON != null)
+                    parseVideosJson(videosJSON);
+                if (reviewJSON != null)
+                    parseReviewsJson(reviewJSON);
+            }
         }
 
         private void parseVideosJson(String videos) {

@@ -35,7 +35,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         } else {
             mainActivityFragment = (MainActivityFragment)getSupportFragmentManager().findFragmentByTag(MAIN_FRAGMENT_TAG);
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_movie_list,
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.fragment_movie_list,
                 mainActivityFragment, MAIN_FRAGMENT_TAG).commit();
 
         if(findViewById(R.id.movie_detail_container) != null) {
